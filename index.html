@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="no" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI-radaren</title>
+<meta name="description" content="KI-radaren og KI-kompasset: systematisk oversikt over kritiske spørsmål ved KI for et statistikkbyrå.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Open+Sans:wght@400;600;700&family=Roboto+Condensed:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #162327; --surface: #1d2f33; --panel: #274247; --line: #2d6975; --frame: #62919a;
+  --text: #f0f8f9; --soft: #c3dcdc; --muted: #8fb2b6;
+  --E: #b6e8b8; --E-mid: #00824d; --L: #d2ceff; --L-mid: #7e5ee8; --K: #f0f8f9; --K-mid: #2d6975;
+  --E-text: #b6e8b8; --L-text: #d2ceff; --red: #dc3400; --accent: #b6e8b8;
+  --half-E: rgba(182,232,184,0.05); --half-L: rgba(210,206,255,0.05);
+  --chip: #274247; --chip-on: #b6e8b8; --chip-on-text: #162327;
+  --focus: #b6e8b8;
+  --font-t: "Roboto Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-h: Roboto, Arial, sans-serif;
+  --font-b: "Open Sans", "Segoe UI", Arial, sans-serif;
+  --font-m: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #ffffff; --surface: #f6fafa; --panel: #f0f8f9; --line: #c3dcdc; --frame: #5e787a;
+  --text: #274247; --soft: #3d5a5f; --muted: #5e787a;
+  --E: #00824d; --E-mid: #b6e8b8; --L: #7e5ee8; --L-mid: #d2ceff; --K: #274247; --K-mid: #c3dcdc;
+  --E-text: #00824d; --L-text: #4b2fb0; --accent: #00824d;
+  --half-E: #ecfeed; --half-L: #f2f0ff;
+  --chip: #f0f8f9; --chip-on: #274247; --chip-on-text: #ffffff;
+  --focus: #00824d;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-b); font-size: 16px; line-height: 1.5; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.wrap { max-width: 1480px; margin: 0 auto; padding: 20px 24px 40px; }
+header.top { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+h1 { font-family: var(--font-t); font-size: 40px; line-height: 1.05; margin: 0; letter-spacing: .2px; }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 17px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+.seg button { background: transparent; border: 0; padding: 7px 14px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--soft); }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-text); }
+.seg button:disabled { opacity: .4; cursor: not-allowed; }
+.btn { background: transparent; border: 1px solid var(--line); border-radius: 2px; padding: 7px 14px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--soft); }
+.btn[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-text); border-color: var(--chip-on); }
+.btn:hover:not([aria-pressed="true"]), .seg button:hover:not([aria-pressed="true"]):not(:disabled) { color: var(--text); border-color: var(--frame); }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; margin-top: 18px; }
+.stage { min-width: 0; }
+.radar-box { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 2px; }
+svg#radar { display: block; width: 100%; height: auto; user-select: none; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin-top: 14px; }
+.yearbox { display: flex; align-items: center; gap: 12px; flex: 1 1 360px; min-width: 0; }
+.play { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: transparent; cursor: pointer; display: grid; place-items: center; flex: none; color: var(--text); }
+.play:hover { border-color: var(--frame); }
+.years { flex: 1; min-width: 0; }
+.years input[type=range] { width: 100%; accent-color: var(--accent); }
+.ticks { display: flex; justify-content: space-between; font-family: var(--font-m); font-size: 12px; color: var(--muted); margin-top: -2px; }
+.ticks span { width: 0; display: flex; flex-direction: column; align-items: center; white-space: nowrap; }
+.ticks span:first-child { align-items: flex-start; } .ticks span:last-child { align-items: flex-end; }
+.ticks b { color: var(--soft); font-weight: 500; }
+@media (max-width: 600px) { .ticks small { display: none; } }
+.ticks small { font-size: 12px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer; font-size: 13px; color: var(--soft); }
+.chip[aria-pressed="false"] { opacity: .5; }
+.chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.label-small { font-family: var(--font-m); font-size: 12px; color: var(--muted); letter-spacing: .4px; text-transform: uppercase; }
+.note { font-size: 13px; color: var(--muted); }
+aside.panel { background: var(--panel); border-top: 5px solid var(--accent); padding: 22px 22px 26px; border-radius: 2px; align-self: start; position: sticky; top: 14px; max-height: calc(100vh - 28px); overflow: auto; }
+aside.panel h2 { font-family: var(--font-h); font-size: 24px; margin: 0 0 6px; line-height: 1.2; }
+aside.panel h3 { font-family: var(--font-h); font-size: 17px; margin: 22px 0 8px; }
+aside.panel p { margin: 0 0 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 14px; }
+.tag { font-size: 12.5px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); }
+.tag.E { border-color: var(--E); color: var(--E-text); } .tag.L { border-color: var(--L); color: var(--L-text); }
+.tag.ny { background: var(--accent); color: var(--chip-on-text); border-color: var(--accent); }
+.tag.scen { border-style: dashed; }
+.kort { font-size: 17px; }
+.src { font-size: 14px; color: var(--muted); }
+.komp { border: 1px solid var(--line); border-radius: 2px; padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+.komp h4 { margin: 0 0 6px; font-family: var(--font-h); font-size: 15px; text-transform: uppercase; letter-spacing: .5px; }
+.komp dl { margin: 0; display: grid; grid-template-columns: 34px 1fr; gap: 4px 6px; font-size: 14px; }
+.komp dt { font-family: var(--font-m); font-size: 12px; color: var(--muted); padding-top: 2px; }
+.komp dd { margin: 0; }
+.komp .forslag { margin-top: 8px; font-size: 13.5px; border-top: 1px dashed var(--L-mid); padding-top: 6px; color: var(--soft); }
+.score { display: grid; gap: 10px; }
+.score .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.score .row > span { width: 78px; font-size: 14px; color: var(--soft); }
+textarea { width: 100%; min-height: 64px; background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 8px; resize: vertical; }
+input[type=text] { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 7px 9px; width: 100%; }
+ol.steps { padding-left: 20px; margin: 0; } ol.steps li { margin-bottom: 6px; }
+.legend { display: grid; grid-template-columns: 26px 1fr; gap: 6px 10px; align-items: center; font-size: 14px; }
+.bar { display: flex; height: 10px; border-radius: 2px; overflow: hidden; border: 1px solid var(--line); margin: 6px 0 2px; }
+.bar div { height: 100%; }
+/* radar */
+.dot { cursor: pointer; transition: transform .8s cubic-bezier(.6,0,.2,1), opacity .4s; }
+.dot .hit { fill: transparent; }
+.dot:focus, .scen:focus, .kpill:focus { outline: none; }
+.dot:focus-visible .ring-sel { opacity: 1; stroke: var(--focus); }
+svg.komp-on .polelab { display: none; }
+svg.smal .bred, svg.smal .polelab { display: none; }
+.dot text { font-family: var(--font-b); font-size: 15px; fill: var(--soft); pointer-events: none; transition: opacity .3s; }
+.dot.p3 text { font-weight: 600; fill: var(--text); }
+.dot.p1 text { fill: var(--muted); }
+.dot:hover text, .dot.sel text { fill: var(--text); }
+.dot.sel .ring-sel { opacity: 1; }
+.dot .ring-sel { opacity: 0; transition: opacity .2s; }
+.dot.dim { opacity: .14; }
+.dot .core { transition: r .6s, fill .4s, stroke .4s; }
+.hide-labels .dot:not(.p3):not(.sel) text { opacity: 0; }
+.scen text { font-family: var(--font-m); font-size: 12.5px; fill: var(--soft); letter-spacing: .3px; }
+.scen .s2 { fill: var(--muted); font-size: 11.5px; }
+.hud { font-family: var(--font-m); fill: var(--muted); font-size: 13px; letter-spacing: .6px; }
+.hudbig { font-family: var(--font-m); fill: var(--text); font-size: 30px; font-weight: 500; }
+.pole { font-family: var(--font-h); font-weight: 700; font-size: 19px; fill: var(--text); }
+.pole-sub { font-family: var(--font-b); font-size: 13.5px; fill: var(--muted); }
+.qname { font-family: var(--font-h); font-weight: 700; font-size: 15px; }
+.kpill rect { fill: var(--panel); stroke: var(--frame); }
+.kpill text { font-family: var(--font-h); font-weight: 700; font-size: 14px; fill: var(--text); letter-spacing: .6px; }
+.kpill { cursor: pointer; }
+.kpill:hover rect, .kpill.sel rect { stroke: var(--accent); stroke-width: 2; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#sweep { transform-origin: 620px 450px; animation: spin 12s linear infinite; pointer-events: none; }
+#layerBase { pointer-events: none; }
+:root[data-theme="light"] #sweep { display: none; }
+@media (prefers-reduced-motion: reduce) { #sweep { display: none; } .dot { transition: none; } }
+/* liste */
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-family: var(--font-m); font-weight: 500; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+td button.link { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; font-weight: 600; color: var(--text); }
+td button.link:hover { text-decoration: underline; }
+select { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 4px 6px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.list-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 6px 14px 14px; overflow-x: auto; }
+/* dialog */
+dialog { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 2px; padding: 0; max-width: 560px; width: calc(100% - 32px); }
+dialog::backdrop { background: rgba(0,0,0,.55); }
+dialog .dbody { padding: 22px 24px; border-top: 5px solid var(--accent); }
+dialog h2 { font-family: var(--font-h); margin: 0 0 12px; font-size: 22px; }
+dialog h3 { font-family: var(--font-h); font-size: 16px; margin: 18px 0 8px; }
+.files { list-style: none; margin: 8px 0 0; padding: 0; font-size: 14px; }
+.files li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); padding: 6px 0; }
+.files button { background: none; border: 0; color: var(--muted); cursor: pointer; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.banner { position: absolute; bottom: 12px; left: 12px; font-family: var(--font-m); font-size: 12.5px; letter-spacing: .8px; padding: 4px 12px; border: 1px dashed var(--frame); color: var(--soft); background: var(--surface); border-radius: 2px; white-space: nowrap; pointer-events: none; }
+footer { margin-top: 28px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+@media (max-width: 1000px) {
+  .main { grid-template-columns: 1fr; }
+  aside.panel { position: static; max-height: none; }
+}
+@media (max-width: 600px) {
+  .wrap { padding: 14px 16px 30px; }
+  h1 { font-size: 32px; }
+  .sub { font-size: 15px; }
+  .banner { font-size: 10.5px; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>KI-radaren</h1>
+      <p class="sub">Kritiske spørsmål ved KI, plassert etter hvor de treffer SSB, hva slags skade de gjør og hvor nær de er</p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Visning">
+        <button type="button" data-side="radar" aria-pressed="true">Radar</button>
+        <button type="button" data-side="liste" aria-pressed="false">Liste</button>
+      </div>
+      <button type="button" class="btn" id="btnKompass" aria-pressed="false">Kompass</button>
+      <button type="button" class="btn" id="btnDel">Lagre og samle</button>
+      <button type="button" class="btn" id="btnTema" aria-label="Bytt mellom mørk og lys modus">Lys modus</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="stage">
+      <div id="radarView">
+        <div class="radar-box">
+          <svg id="radar" viewBox="0 0 1240 900" role="img" aria-labelledby="radarTitle radarDesc">
+            <title id="radarTitle">KI-radaren</title>
+            <desc id="radarDesc">Radar med fire kvadranter. Loddrett akse: vår egen bruk (nord) mot vårt samfunnsoppdrag (sør). Vannrett akse: makt og rettferdighet (vest) mot faglig og epistemisk (øst). Ringene viser tidshorisont. Temaene er også tilgjengelige i listevisningen.</desc>
+            <g id="layerBase"></g>
+            <g id="sweep"></g>
+            <g id="layerScen"></g>
+            <g id="layerDots"></g>
+            <g id="layerKompass"></g>
+            <g id="layerHud"></g>
+          </svg>
+          <div class="banner" id="banner" hidden>SCENARIO · AI 2027 · IKKE EN PROGNOSE</div>
+        </div>
+      </div>
+      <div id="listView" hidden>
+        <div class="list-wrap"><table id="tbl"></table></div>
+      </div>
+
+      <div class="controls">
+        <div class="yearbox">
+          <button type="button" class="play" id="btnPlay" aria-label="Spill av utviklingen over tid">
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon id="playIcon" points="2,1 13,7 2,13" fill="currentColor"/></svg>
+          </button>
+          <div class="years">
+            <label for="year" class="sr">År</label>
+            <input type="range" id="year" min="0" max="4" step="1" value="3">
+            <div class="ticks" id="ticks"></div>
+          </div>
+        </div>
+        <div class="seg" role="group" aria-label="Hvilke vurderinger som vises">
+          <button type="button" data-vis="start" aria-pressed="true">Startvurdering</button>
+          <button type="button" data-vis="min" aria-pressed="false">Min radar</button>
+          <button type="button" data-vis="samlet" aria-pressed="false" disabled>Samlet</button>
+        </div>
+        <div class="filters" role="group" aria-label="Filter">
+          <button type="button" class="chip" data-f="E" aria-pressed="true"><i style="background:var(--E)"></i>Faglig</button>
+          <button type="button" class="chip" data-f="L" aria-pressed="true"><i style="background:var(--L)"></i>Makt</button>
+          <button type="button" class="chip" data-f="K" aria-pressed="true"><i style="background:var(--K)"></i>Blandet</button>
+          <button type="button" class="chip" data-f="ny" aria-pressed="false">Bare nye for SSB</button>
+        </div>
+      </div>
+      <p class="note" id="visNote"></p>
+    </div>
+
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <footer>
+    Konsept: Thomas Bjørnskau, 2026. Utkast. Plassering, ring og pregnans er vurderinger, ikke målinger.
+    Dine vurderinger lagres bare i denne nettleseren til du laster dem ned.
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <div class="dbody">
+    <h2>Lagre og samle vurderinger</h2>
+    <p class="note">Vurderingene dine lagres bare i denne nettleseren. Last dem ned som fil for å dele dem. Etter en workshop kan du laste inn flere filer og se et samlet bilde.</p>
+    <div class="grid2">
+      <div><label class="label-small" for="inNavn">Navn eller gruppe</label><input type="text" id="inNavn" autocomplete="off"></div>
+      <div><label class="label-small" for="inSeksjon">Seksjon</label><input type="text" id="inSeksjon" autocomplete="off"></div>
+    </div>
+    <h3>Mine vurderinger</h3>
+    <p class="note" id="dlgAntall"></p>
+    <div class="tools">
+      <button type="button" class="btn" id="btnEksport">Last ned som JSON</button>
+      <button type="button" class="btn" id="btnNullstill">Nullstill mine</button>
+    </div>
+    <h3>Samle flere</h3>
+    <div class="tools">
+      <label class="btn" for="inFiler" style="display:inline-block">Last inn filer …</label>
+      <input type="file" id="inFiler" accept="application/json,.json" multiple hidden>
+      <button type="button" class="btn" id="btnTaMed">Ta med mine</button>
+    </div>
+    <ul class="files" id="filListe"></ul>
+    <p class="note" id="importMsg"></p>
+    <div class="tools" style="justify-content:flex-end;margin-top:16px"><button type="button" class="btn" id="btnLukk">Lukk</button></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+'use strict';
+const CX = 620, CY = 450, R = 362;
+const NS = 'http://www.w3.org/2000/svg';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const el = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const polar = (deg, r) => { const a = deg * Math.PI / 180; return [CX + r * R * Math.cos(a), CY - r * R * Math.sin(a)]; };
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* lagring ikke tilgjengelig */ } }
+};
+
+let D;                     // tema.json
+const S = {                // tilstand
+  side: 'radar', vis: 'start', ar: 2026, kompass: false, valgt: null, kvalgt: null,
+  filter: { E: true, L: true, K: true, ny: false }, spiller: false
+};
+let MIN = store.get('ki-radar-min', { navn: '', seksjon: '', vurderinger: {} });
+let SAMLET = store.get('ki-radar-samlet', []);
+const tema = () => store.get('ki-radar-tema', 'dark');
+
+function settTema(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('#btnTema').textContent = t === 'dark' ? 'Lys modus' : 'Mørk modus';
+  store.set('ki-radar-tema', t);
+}
+
+// ---------- beregninger ----------
+const ringFor = r => D.ringer.find(g => r >= g.inner - 1e-6 && r <= g.ytre + 1e-6) || D.ringer[D.ringer.length - 1];
+const ringById = id => D.ringer.find(g => g.id === id);
+const kvadrant = ang => { ang = ((ang % 360) + 360) % 360; return ang < 90 ? 'no' : ang < 180 ? 'nv' : ang < 270 ? 'sv' : 'so'; };
+const kvById = id => D.kvadranter.find(k => k.id === id);
+const kompById = id => D.kompass.find(k => k.id === id);
+
+function posAar(t, ar) {
+  const P = t.posisjon, ks = Object.keys(P).map(Number).sort((a, b) => a - b);
+  if (P[ar]) return { r: P[ar].r, p: P[ar].p };
+  let lo = ks[0], hi = ks[ks.length - 1];
+  for (const k of ks) { if (k <= ar) lo = k; if (k >= ar) { hi = k; break; } }
+  const f = hi === lo ? 0 : (ar - lo) / (hi - lo);
+  return { r: P[lo].r + (P[hi].r - P[lo].r) * f, p: P[lo].p + (P[hi].p - P[lo].p) * f };
+}
+function vurderingsverdi(t, v) {
+  const base = posAar(t, 2026);
+  let r = base.r, p = base.p;
+  if (v && v.ring) { const g = ringById(v.ring); if (g && ringFor(base.r).id !== g.id) r = g.midt; }
+  if (v && v.p) p = v.p;
+  return { r, p };
+}
+function effektiv(t) {
+  if (S.vis === 'start') return { ...posAar(t, S.ar), spredning: 0 };
+  if (S.vis === 'min') return { ...vurderingsverdi(t, MIN.vurderinger[t.id]), spredning: 0 };
+  const verdier = SAMLET.map(f => vurderingsverdi(t, f.vurderinger[t.id]));
+  if (!verdier.length) return { ...posAar(t, 2026), spredning: 0 };
+  const mr = verdier.reduce((a, b) => a + b.r, 0) / verdier.length;
+  const mp = verdier.reduce((a, b) => a + b.p, 0) / verdier.length;
+  const sd = Math.sqrt(verdier.reduce((a, b) => a + (b.r - mr) ** 2, 0) / verdier.length);
+  return { r: mr, p: mp, spredning: sd, n: verdier.length, verdier };
+}
+const synlig = t => S.filter[t.type] && (!S.filter.ny || t.ny);
+
+// ---------- statisk grunn ----------
+function tegnGrunn() {
+  const g = $('#layerBase'); g.innerHTML = '';
+  el('path', { d: `M${CX},${CY - R} A${R},${R} 0 0 1 ${CX},${CY + R} Z`, fill: 'var(--half-E)' }, g);
+  el('path', { d: `M${CX},${CY - R} A${R},${R} 0 0 0 ${CX},${CY + R} Z`, fill: 'var(--half-L)' }, g);
+  el('path', { d: `M${CX},${CY - R} A${R},${R} 0 0 1 ${CX},${CY + R}`, fill: 'none', stroke: 'var(--E)', 'stroke-width': 2.5 }, g);
+  el('path', { d: `M${CX},${CY - R} A${R},${R} 0 0 0 ${CX},${CY + R}`, fill: 'none', stroke: 'var(--L)', 'stroke-width': 2.5 }, g);
+  D.ringer.slice(0, -1).forEach(r => el('circle', { cx: CX, cy: CY, r: r.ytre * R, fill: 'none', stroke: 'var(--line)', 'stroke-dasharray': '4 6' }, g));
+  // gradmerker
+  for (let d = 0; d < 360; d += 5) {
+    const a = d * Math.PI / 180, r1 = R + 5, r2 = R + (d % 45 === 0 ? 16 : 9);
+    el('line', { x1: CX + r1 * Math.cos(a), y1: CY + r1 * Math.sin(a), x2: CX + r2 * Math.cos(a), y2: CY + r2 * Math.sin(a), stroke: 'var(--line)', 'stroke-width': 1 }, g);
+  }
+  el('line', { x1: CX - R - 18, y1: CY, x2: CX + R + 18, y2: CY, stroke: 'var(--frame)', 'stroke-width': 1 }, g);
+  el('line', { x1: CX, y1: CY - R - 12, x2: CX, y2: CY + R + 12, stroke: 'var(--frame)', 'stroke-width': 1 }, g);
+  el('circle', { cx: CX, cy: CY, r: D.ringer[0].inner * R, fill: 'var(--surface)', stroke: 'var(--frame)' }, g);
+  const ssb = el('text', { x: CX, y: CY + 6, 'text-anchor': 'middle', class: 'pole', style: 'font-size:17px' }, g); ssb.textContent = 'SSB';
+  D.ringer.forEach(r => {
+    const y = CY - r.ytre * R + 18;
+    const t = el('text', { x: CX - 10, y, 'text-anchor': 'end', class: 'hud' }, g); t.textContent = r.navn.toUpperCase();
+  });
+  const A = D.akser;
+  const txt = (x, y, s, cls, anchor, fill) => { const t = el('text', { x, y, 'text-anchor': anchor, class: cls + (cls.startsWith('pole') && s !== 'SSB' ? ' polelab' : '') }, g); if (fill) t.setAttribute('style', `fill:${fill}`); t.textContent = s; return t; };
+  txt(CX, CY - R - 36, A.nord.navn, 'pole', 'middle'); txt(CX, CY - R - 18, A.nord.under, 'pole-sub', 'middle');
+  txt(CX, CY + R + 40, A.sor.navn, 'pole', 'middle'); txt(CX, CY + R + 59, A.sor.under, 'pole-sub', 'middle');
+  txt(CX + R + 28, CY - 8, 'Faglig og', 'pole', 'start', 'var(--E-text)'); txt(CX + R + 28, CY + 15, 'epistemisk', 'pole', 'start', 'var(--E-text)');
+  txt(CX + R + 28, CY + 36, 'sannhet, kompetanse,', 'pole-sub', 'start'); txt(CX + R + 28, CY + 53, 'dømmekraft', 'pole-sub', 'start');
+  txt(CX - R - 28, CY - 8, 'Makt og', 'pole', 'end', 'var(--L-text)'); txt(CX - R - 28, CY + 15, 'rettferdighet', 'pole', 'end', 'var(--L-text)');
+  txt(CX - R - 28, CY + 36, 'ansvar, skjevhet,', 'pole-sub', 'end'); txt(CX - R - 28, CY + 53, 'avhengighet, kontroll', 'pole-sub', 'end');
+  const qn = { no: [1000, 130, 'start', 'var(--E-text)'], nv: [240, 130, 'end', 'var(--L-text)'], sv: [240, 790, 'end', 'var(--L-text)'], so: [1000, 790, 'start', 'var(--E-text)'] };
+  D.kvadranter.forEach(k => { const [x, y, a, f] = qn[k.id]; txt(x, y, k.navn, 'qname bred', a, f); });
+  // sveip (bare mørk modus)
+  const sw = $('#sweep'); sw.innerHTML = '';
+  for (let i = 0; i < 18; i++) {
+    const a0 = -i * 2.2, a1 = -(i + 1) * 2.2;
+    const p = (a) => [CX + R * Math.cos(a * Math.PI / 180), CY + R * Math.sin(a * Math.PI / 180)];
+    const [x0, y0] = p(a0), [x1, y1] = p(a1);
+    el('path', { d: `M${CX},${CY} L${x0},${y0} A${R},${R} 0 0 0 ${x1},${y1} Z`, fill: `rgba(182,232,184,${0.07 * (1 - i / 18)})` }, sw);
+  }
+  el('line', { x1: CX, y1: CY, x2: CX + R, y2: CY, stroke: 'rgba(182,232,184,.55)', 'stroke-width': 1.5 }, sw);
+}
+
+// ---------- prikker ----------
+const DOTS = {};
+function lagPrikker() {
+  const g = $('#layerDots'); g.innerHTML = '';
+  D.temaer.forEach(t => {
+    const d = el('g', { class: 'dot', tabindex: 0, role: 'button', 'data-id': t.id }, g);
+    const tt = el('title', {}, d); tt.textContent = t.navn;
+    el('circle', { class: 'spread', r: 0, fill: 'none', stroke: `var(--${t.type})`, 'stroke-dasharray': '3 4', opacity: .7 }, d);
+    el('circle', { class: 'ring-sel', r: 22, fill: 'none', stroke: 'var(--text)', 'stroke-width': 1.5 }, d);
+    el('circle', { class: 'core', r: 10 }, d);
+    el('circle', { class: 'hit', r: 20 }, d);
+    el('text', { y: 5 }, d).textContent = t.navn;
+    DOTS[t.id] = d;
+    d.addEventListener('click', () => velg(t.id));
+    d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); velg(t.id); } });
+  });
+}
+function stilPrikk(d, t, p) {
+  const pr = Math.max(1, Math.min(3, Math.round(p)));
+  const rad = { 1: 7, 2: 9.5, 3: 12.5 }[pr] + (p - pr) * 2.5;
+  const core = d.querySelector('.core');
+  core.setAttribute('r', rad.toFixed(1));
+  core.setAttribute('fill', pr === 3 ? `var(--${t.type})` : pr === 2 ? `var(--${t.type}-mid)` : 'var(--surface)');
+  core.setAttribute('stroke', `var(--${t.type})`);
+  core.setAttribute('stroke-width', 1.6);
+  d.classList.remove('p1', 'p2', 'p3'); d.classList.add('p' + pr);
+  return rad;
+}
+function oppdaterPrikker() {
+  D.temaer.forEach(t => {
+    const d = DOTS[t.id], v = effektiv(t);
+    const [x, y] = polar(t.vinkel, v.r);
+    d.style.transform = `translate(${x}px, ${y}px)`;
+    const rad = stilPrikk(d, t, v.p);
+    const txt = d.querySelector('text'), hoyre = x >= CX - 2 || t.id === 'hype';
+    txt.setAttribute('x', hoyre ? rad + 7 : -rad - 7);
+    txt.setAttribute('text-anchor', hoyre ? 'start' : 'end');
+    d.querySelector('.spread').setAttribute('r', v.spredning ? (rad + v.spredning * R).toFixed(1) : 0);
+    d.classList.toggle('dim', !synlig(t));
+    d.classList.toggle('sel', S.valgt === t.id);
+    d.setAttribute('aria-label', `${t.navn}. ${ringFor(v.r).navn}. Pregnans ${Math.round(v.p)} av 3.`);
+  });
+}
+
+// ---------- scenario, kompass, hud ----------
+function tegnScenario() {
+  const g = $('#layerScen'); g.innerHTML = '';
+  const vis = S.ar === D.scenarioAr && S.vis === 'start';
+  $('#banner').hidden = !vis;
+  if (!vis) return;
+  D.scenario.forEach(s => {
+    const [x, y] = polar(s.vinkel, 1.0);
+    const gg = el('g', { class: 'scen', tabindex: 0, role: 'button', style: 'cursor:pointer' }, g);
+    el('title', {}, gg).textContent = `${s.navn} (${s.dato}, scenario)`;
+    el('circle', { cx: x, cy: y, r: 7, fill: 'none', stroke: 'var(--soft)', 'stroke-width': 1.5, 'stroke-dasharray': '2 3' }, gg);
+    el('circle', { cx: x, cy: y, r: 2.5, fill: 'var(--soft)' }, gg);
+    const hoyre = Math.cos(s.vinkel * Math.PI / 180) >= -0.05;
+    const tx = x + (hoyre ? 14 : -14), an = hoyre ? 'start' : 'end';
+    el('text', { x: tx, y: y - 1, 'text-anchor': an }, gg).textContent = s.navn.toUpperCase();
+    el('text', { x: tx, y: y + 14, 'text-anchor': an, class: 's2' }, gg).textContent = s.dato.toUpperCase() + ' · SCENARIO';
+    const go = () => { S.valgt = 'scen:' + s.id; S.kvalgt = null; panel(); oppdaterPrikker(); };
+    gg.addEventListener('click', go);
+    gg.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+function tegnKompass() {
+  const g = $('#layerKompass'); g.innerHTML = '';
+  $('#radar').classList.toggle('komp-on', S.kompass);
+  if (!S.kompass) return;
+  const pos = { nord: [CX, CY - R - 30], ost: [CX + R + 118, CY], sor: [CX, CY + R + 40], vest: [CX - R - 118, CY] };
+  D.kompass.forEach(k => {
+    const [x, y] = pos[k.retning], w = k.navn.length * 9.6 + 30;
+    const gg = el('g', { class: 'kpill' + (S.kvalgt === k.id ? ' sel' : ''), tabindex: 0, role: 'button' }, g);
+    el('rect', { x: x - w / 2, y: y - 17, width: w, height: 32, rx: 2 }, gg);
+    el('text', { x, y: y + 5, 'text-anchor': 'middle' }, gg).textContent = k.navn.toUpperCase();
+    const go = () => { S.kvalgt = k.id; S.valgt = null; panel(); tegnKompass(); oppdaterPrikker(); };
+    gg.addEventListener('click', go);
+    gg.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+function tegnHud() {
+  const g = $('#layerHud'); g.innerHTML = '';
+  const ar = S.vis === 'start' ? String(S.ar) : '2026';
+  const lab = S.vis === 'min' ? 'MIN RADAR' : S.vis === 'samlet' ? `SAMLET · ${SAMLET.length} ${SAMLET.length === 1 ? 'FIL' : 'FILER'}` :
+    S.ar === D.scenarioAr ? 'SCENARIO' : S.ar === 2026 ? 'I DAG' : (S.ar === 2024 || S.ar === 2025) ? 'INTERPOLERT' : 'ANSLAG';
+  const smal = $('#radar').classList.contains('smal');
+  el('text', { x: smal ? 246 : 28, y: smal ? 100 : 50, class: 'hudbig' }, g).textContent = ar;
+  el('text', { x: smal ? 246 : 28, y: smal ? 124 : 74, class: 'hud' }, g).textContent = lab;
+  if (smal) return;
+  el('text', { x: 1212, y: 50, class: 'hud', 'text-anchor': 'end' }, g).textContent = 'KI-RADAR';
+  const synl = D.temaer.filter(synlig).length;
+  el('text', { x: 1212, y: 70, class: 'hud', 'text-anchor': 'end' }, g).textContent = `${synl} AV ${D.temaer.length} TEMAER`;
+}
+
+// ---------- panel ----------
+function kompKort(k) {
+  return `<div class="komp"><h4>${esc(k.navn)}</h4><dl><dt>MEG</dt><dd>${esc(k.meg)}</dd><dt>OSS</dt><dd>${esc(k.oss)}</dd></dl>
+    ${k.forslag ? `<div class="forslag"><b>Forslag:</b> ${esc(k.forslag)}</div>` : ''}</div>`;
+}
+function kildeHtml(id) {
+  const k = id && D.kilder[id];
+  return k ? `<p class="src">Kilde: <a href="${esc(k.url)}" target="_blank" rel="noopener">${esc(k.tittel)}</a></p>` : '<p class="src">Ingen ekstern kilde. Egen vurdering.</p>';
+}
+function panel() {
+  const p = $('#panel');
+  if (S.valgt && S.valgt.startsWith('scen:')) {
+    const s = D.scenario.find(x => 'scen:' + x.id === S.valgt);
+    p.innerHTML = `<p class="label-small">Scenario · AI 2027</p><h2>${esc(s.navn)}</h2>
+      <div class="tags"><span class="tag scen">${esc(s.dato)}</span><span class="tag scen">Scenario, ikke prognose</span></div>
+      <p class="kort">${esc(s.kort)}</p>
+      <p>AI 2027 er et scenario skrevet for å utløse debatt. Forfatterne har senere skjøvet tidslinjen. Punktene i horisonten viser hva scenarioet beskriver, ikke hva vi venter.</p>
+      ${kildeHtml(s.kilde)}<p><button type="button" class="btn" id="tilbake">Tilbake til oversikten</button></p>`;
+    $('#tilbake').onclick = () => { S.valgt = null; panel(); oppdaterPrikker(); };
+    return;
+  }
+  if (S.kvalgt) {
+    const k = kompById(S.kvalgt);
+    const kv = D.kvadranter.filter(q => q.kompass.includes(k.id));
+    const temaer = D.temaer.filter(t => kv.some(q => q.id === kvadrant(t.vinkel)));
+    p.innerHTML = `<p class="label-small">Kompasset · ${esc(k.retning)}</p><h2>${esc(k.navn)}</h2>
+      <p>Svarer på kvadrantene ${kv.map(q => `<b>${esc(q.navn)}</b>`).join(' og ')}.</p>${kompKort(k)}
+      <h3>Temaer dette verdiordet svarer på</h3><p>${temaer.map(t => `<button type="button" class="chip" data-go="${t.id}">${esc(t.navn)}</button>`).join(' ')}</p>
+      <p><button type="button" class="btn" id="tilbake">Tilbake til oversikten</button></p>`;
+    p.querySelectorAll('[data-go]').forEach(b => b.onclick = () => velg(b.dataset.go));
+    $('#tilbake').onclick = () => { S.kvalgt = null; panel(); tegnKompass(); };
+    return;
+  }
+  if (!S.valgt) {
+    const n = D.temaer.length, na = D.temaer.filter(t => ringFor(posAar(t, 2026).r).id === 'na').length;
+    p.innerHTML = `<p class="label-small">Om radaren</p><h2>Hvor treffer KI-kritikken oss?</h2>
+      <p>${n} kritiske temaer valgt for et statistikkbyrå. ${na} av dem ligger allerede i den indre ringen.</p>
+      <h3>Slik leser du radaren</h3>
+      <div class="legend">
+        <svg width="26" height="20" aria-hidden="true"><line x1="0" y1="10" x2="26" y2="10" stroke="var(--frame)"/><line x1="13" y1="0" x2="13" y2="20" stroke="var(--frame)"/></svg><span><b>Sektor</b> er type: nord er vår egen bruk, sør er samfunnsoppdraget. Øst er faglig skade, vest er makt.</span>
+        <svg width="26" height="20" aria-hidden="true"><circle cx="13" cy="10" r="8" fill="none" stroke="var(--frame)" stroke-dasharray="3 3"/></svg><span><b>Ring</b> er tidshorisont: nå, om 1–3 år eller i horisonten.</span>
+        <svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="var(--K)"/></svg><span><b>Størrelse og fyll</b> er pregnans, altså hvor tungt temaet veier.</span>
+        <svg width="26" height="20" aria-hidden="true"><circle cx="7" cy="10" r="6" fill="var(--E)"/><circle cx="19" cy="10" r="6" fill="var(--L)"/></svg><span><b>Farge</b>: grønn er faglig, lilla er makt, nøytral er blandet eller kostnad.</span>
+      </div>
+      <h3>Slik bruker du den</h3>
+      <ol class="steps"><li>Klikk et tema for å lese mer og se hva kompasset sier.</li>
+      <li>Dra i tidslinjen eller trykk spill av. 2027 viser scenarioet AI 2027.</li>
+      <li>Gi egen pregnans og ring under «Min vurdering», og se resultatet i «Min radar».</li>
+      <li>Last ned vurderingene og samle flere filer under «Lagre og samle».</li></ol>
+      <p class="note" style="margin-top:14px">${esc(D.meta.status)}</p>`;
+    return;
+  }
+  const t = D.temaer.find(x => x.id === S.valgt), q = kvById(kvadrant(t.vinkel)), v = effektiv(t), mv = MIN.vurderinger[t.id] || {};
+  const start = posAar(t, 2026);
+  const ringKnapper = D.ringer.map(g => `<button type="button" data-ring="${g.id}" aria-pressed="${mv.ring === g.id}">${esc(g.navn)}</button>`).join('');
+  const pKnapper = [1, 2, 3].map(n => `<button type="button" data-p="${n}" aria-pressed="${mv.p === n}">${['Lav', 'Middels', 'Høy'][n - 1]}</button>`).join('');
+  let samletHtml = '';
+  if (S.vis === 'samlet' && v.n) {
+    const tell = { na: 0, snart: 0, horisont: 0 };
+    v.verdier.forEach(x => tell[ringFor(x.r).id]++);
+    const farger = { na: 'var(--accent)', snart: 'var(--frame)', horisont: 'var(--line)' };
+    samletHtml = `<h3>Samlet (${v.n} ${v.n === 1 ? 'fil' : 'filer'})</h3>
+      <p>Gjennomsnittlig pregnans ${v.p.toFixed(1).replace('.', ',')} av 3.</p>
+      <div class="bar" role="img" aria-label="Fordeling på ringer">${D.ringer.map(g => `<div style="width:${100 * tell[g.id] / v.n}%;background:${farger[g.id]}"></div>`).join('')}</div>
+      <p class="note">${D.ringer.map(g => `${esc(g.navn)}: ${tell[g.id]}`).join(' · ')}${v.spredning > 0.08 ? ' · stor uenighet om tidshorisonten' : ''}</p>`;
+  }
+  p.innerHTML = `<p class="label-small">${esc(q.navn)}</p><h2>${esc(t.navn)}</h2>
+    <div class="tags"><span class="tag ${t.type}">${esc(D.typer[t.type])}</span><span class="tag">${esc(ringFor(v.r).navn)}</span>
+      <span class="tag">Pregnans ${Math.round(v.p)} av 3</span>${t.ny ? '<span class="tag ny">Nytt for SSB</span>' : ''}</div>
+    <p class="kort">${esc(t.kort)}</p><p>${esc(t.ssb)}</p>${kildeHtml(t.kilde)}
+    <p class="note">Startvurdering i dag: ${esc(ringFor(start.r).navn)}, pregnans ${Math.round(start.p)}. Plasseringen er en vurdering, ikke en måling.</p>
+    ${samletHtml}
+    <h3>Min vurdering</h3>
+    <div class="score">
+      <div class="row"><span>Pregnans</span><div class="seg" role="group" aria-label="Min pregnans">${pKnapper}</div></div>
+      <div class="row"><span>Ring</span><div class="seg" role="group" aria-label="Min ring">${ringKnapper}</div></div>
+      <label class="sr" for="notat">Notat</label><textarea id="notat" placeholder="Hvorfor? Uenighet er også et funn.">${esc(mv.notat || '')}</textarea>
+      <div class="tools"><button type="button" class="btn" id="nullTema">Fjern min vurdering</button></div>
+    </div>
+    <h3>Hva kompasset sier</h3>${q.kompass.map(id => kompKort(kompById(id))).join('')}
+    <p><button type="button" class="btn" id="tilbake">Tilbake til oversikten</button></p>`;
+  const lagre = () => { store.set('ki-radar-min', MIN); oppdaterAlt(false); };
+  p.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { const n = +b.dataset.p; MIN.vurderinger[t.id] = { ...mv, p: mv.p === n ? null : n }; lagre(); panel(); });
+  p.querySelectorAll('[data-ring]').forEach(b => b.onclick = () => { const r = b.dataset.ring; MIN.vurderinger[t.id] = { ...mv, ring: mv.ring === r ? null : r }; lagre(); panel(); });
+  $('#notat').oninput = e => { MIN.vurderinger[t.id] = { ...(MIN.vurderinger[t.id] || {}), notat: e.target.value }; store.set('ki-radar-min', MIN); };
+  $('#nullTema').onclick = () => { delete MIN.vurderinger[t.id]; lagre(); panel(); };
+  $('#tilbake').onclick = () => { S.valgt = null; panel(); oppdaterPrikker(); };
+}
+
+// ---------- liste ----------
+function tegnListe() {
+  const rader = [...D.temaer].sort((a, b) => kvadrant(a.vinkel).localeCompare(kvadrant(b.vinkel)) || a.vinkel - b.vinkel);
+  const opt = (vals, cur) => vals.map(([v, l]) => `<option value="${v}" ${String(cur ?? '') === String(v) ? 'selected' : ''}>${l}</option>`).join('');
+  $('#tbl').innerHTML = `<thead><tr><th>Tema</th><th>Kvadrant</th><th>Ring ${S.vis === 'start' ? S.ar : 'i dag'}</th><th>Pregnans</th><th>Min pregnans</th><th>Min ring</th></tr></thead><tbody>
+    ${rader.filter(synlig).map(t => { const v = effektiv(t), m = MIN.vurderinger[t.id] || {};
+      return `<tr><td><span class="sw" style="background:var(--${t.type})"></span><button type="button" class="link" data-go="${t.id}">${esc(t.navn)}</button>${t.ny ? ' <span class="tag ny">Nytt</span>' : ''}</td>
+      <td>${esc(kvById(kvadrant(t.vinkel)).navn)}</td><td>${esc(ringFor(v.r).navn)}</td><td>${Math.round(v.p)}</td>
+      <td><label class="sr" for="lp-${t.id}">Min pregnans for ${esc(t.navn)}</label><select id="lp-${t.id}" data-lp="${t.id}">${opt([['', '–'], [1, 'Lav'], [2, 'Middels'], [3, 'Høy']], m.p)}</select></td>
+      <td><label class="sr" for="lr-${t.id}">Min ring for ${esc(t.navn)}</label><select id="lr-${t.id}" data-lr="${t.id}">${opt([['', '–'], ...D.ringer.map(g => [g.id, g.navn])], m.ring)}</select></td></tr>`; }).join('')}</tbody>`;
+  $('#tbl').querySelectorAll('[data-go]').forEach(b => b.onclick = () => velg(b.dataset.go));
+  $('#tbl').querySelectorAll('[data-lp]').forEach(s => s.onchange = () => { const id = s.dataset.lp; MIN.vurderinger[id] = { ...(MIN.vurderinger[id] || {}), p: s.value ? +s.value : null }; store.set('ki-radar-min', MIN); oppdaterAlt(false); });
+  $('#tbl').querySelectorAll('[data-lr]').forEach(s => s.onchange = () => { const id = s.dataset.lr; MIN.vurderinger[id] = { ...(MIN.vurderinger[id] || {}), ring: s.value || null }; store.set('ki-radar-min', MIN); oppdaterAlt(false); });
+}
+
+// ---------- kontroller ----------
+function velg(id) { S.valgt = id; S.kvalgt = null; if (S.side === 'liste') settSide('radar'); panel(); oppdaterPrikker(); tegnKompass(); }
+function settSide(s) {
+  S.side = s;
+  document.querySelectorAll('[data-side]').forEach(b => b.setAttribute('aria-pressed', b.dataset.side === s));
+  $('#radarView').hidden = s !== 'radar'; $('#listView').hidden = s !== 'liste';
+  if (s === 'liste') tegnListe();
+}
+function settVis(v) {
+  S.vis = v;
+  document.querySelectorAll('[data-vis]').forEach(b => b.setAttribute('aria-pressed', b.dataset.vis === v));
+  const laast = v !== 'start';
+  $('#year').disabled = laast; $('#btnPlay').disabled = laast;
+  $('#visNote').textContent = v === 'min' ? `Min radar viser dine vurderinger for i dag (2026). ${Object.keys(MIN.vurderinger).length} temaer har egen vurdering, resten følger startvurderingen.` :
+    v === 'samlet' ? `Gjennomsnitt av ${SAMLET.length} innlastede ${SAMLET.length === 1 ? 'fil' : 'filer'}. Stiplet ring rundt et punkt viser uenighet om tidshorisonten.` : '';
+  oppdaterAlt(true);
+}
+function oppdaterAlt(fullPanel = true) {
+  oppdaterPrikker(); tegnScenario(); tegnKompass(); tegnHud();
+  if (S.side === 'liste') tegnListe();
+  if (fullPanel) panel();
+  const sb = document.querySelector('[data-vis="samlet"]');
+  sb.disabled = SAMLET.length === 0; sb.textContent = SAMLET.length ? `Samlet (${SAMLET.length})` : 'Samlet';
+}
+function settAar(i) {
+  S.ar = D.ar[i]; $('#year').value = i;
+  $('#year').setAttribute('aria-valuetext', S.ar === D.scenarioAr ? `${S.ar}, scenario` : String(S.ar));
+  oppdaterAlt(!S.valgt);
+  if (S.valgt) panel();
+}
+let timer = null;
+function spill() {
+  if (timer) { clearInterval(timer); timer = null; $('#playIcon').setAttribute('points', '2,1 13,7 2,13'); return; }
+  $('#playIcon').setAttribute('points', '2,1 5,1 5,13 2,13 9,1 12,1 12,13 9,13');
+  let i = 0; settAar(0);
+  timer = setInterval(() => { i++; if (i >= D.ar.length) { clearInterval(timer); timer = null; $('#playIcon').setAttribute('points', '2,1 13,7 2,13'); return; } settAar(i); }, 1700);
+}
+
+// ---------- lagre og samle ----------
+function nedlast() {
+  MIN.navn = $('#inNavn').value.trim(); MIN.seksjon = $('#inSeksjon').value.trim(); store.set('ki-radar-min', MIN);
+  const ut = { format: 'ki-radar-vurdering', versjon: 1, datagrunnlag: D.meta.versjon, navn: MIN.navn, seksjon: MIN.seksjon, dato: new Date().toISOString().slice(0, 10), vurderinger: MIN.vurderinger };
+  const blob = new Blob([JSON.stringify(ut, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  const slug = (MIN.navn || 'vurdering').toLowerCase().replace(/[^a-z0-9æøå]+/g, '-').replace(/^-|-$/g, '');
+  a.download = `ki-radar-${slug || 'vurdering'}-${ut.dato}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function rensVurderinger(v) {
+  const ut = {}, ids = new Set(D.temaer.map(t => t.id)), ringer = new Set(D.ringer.map(g => g.id));
+  if (!v || typeof v !== 'object') return ut;
+  for (const id of Object.keys(v)) {
+    if (!ids.has(id) || !v[id] || typeof v[id] !== 'object') continue;
+    const p = [1, 2, 3].includes(+v[id].p) ? +v[id].p : null, ring = ringer.has(v[id].ring) ? v[id].ring : null;
+    if (p || ring) ut[id] = { p, ring, notat: typeof v[id].notat === 'string' ? v[id].notat.slice(0, 2000) : '' };
+  }
+  return ut;
+}
+function tegnFiler() {
+  $('#filListe').innerHTML = SAMLET.map((f, i) => `<li><span>${esc(f.navn || 'Uten navn')}${f.seksjon ? ' · ' + esc(f.seksjon) : ''} <span class="note">(${Object.keys(f.vurderinger).length} temaer)</span></span><button type="button" data-rm="${i}" aria-label="Fjern">Fjern</button></li>`).join('');
+  $('#filListe').querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { SAMLET.splice(+b.dataset.rm, 1); store.set('ki-radar-samlet', SAMLET); tegnFiler(); if (!SAMLET.length && S.vis === 'samlet') settVis('start'); else oppdaterAlt(); });
+  $('#dlgAntall').textContent = `${Object.keys(MIN.vurderinger).length} av ${D.temaer.length} temaer har egen vurdering.`;
+}
+async function lesFiler(files) {
+  let ok = 0, feil = 0;
+  for (const f of files) {
+    try {
+      const j = JSON.parse(await f.text());
+      if (j.format !== 'ki-radar-vurdering') throw new Error('format');
+      SAMLET.push({ navn: String(j.navn || f.name).slice(0, 80), seksjon: String(j.seksjon || '').slice(0, 80), vurderinger: rensVurderinger(j.vurderinger) });
+      ok++;
+    } catch (e) { feil++; }
+  }
+  store.set('ki-radar-samlet', SAMLET);
+  $('#importMsg').textContent = `${ok} ${ok === 1 ? 'fil' : 'filer'} lastet inn${feil ? `, ${feil} kunne ikke leses` : ''}.`;
+  tegnFiler(); oppdaterAlt();
+  if (ok) settVis('samlet');
+}
+
+// ---------- oppstart ----------
+function init() {
+  settTema(tema());
+  $('#ticks').innerHTML = D.ar.map(a => `<span><b>${a}</b><small>${a === D.scenarioAr ? 'scenario' : a === 2026 ? 'i dag' : (a === 2024 || a === 2025) ? '&nbsp;' : 'anslag'}</small></span>`).join('');
+  tegnGrunn(); lagPrikker();
+  settAar(D.ar.indexOf(2026));
+  settVis('start');
+  document.querySelectorAll('[data-side]').forEach(b => b.onclick = () => settSide(b.dataset.side));
+  document.querySelectorAll('[data-vis]').forEach(b => b.onclick = () => settVis(b.dataset.vis));
+  document.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { const f = b.dataset.f; S.filter[f] = !S.filter[f]; b.setAttribute('aria-pressed', S.filter[f]); oppdaterAlt(false); });
+  $('#year').oninput = e => settAar(+e.target.value);
+  $('#btnPlay').onclick = spill;
+  $('#btnKompass').onclick = () => { S.kompass = !S.kompass; $('#btnKompass').setAttribute('aria-pressed', S.kompass); if (!S.kompass && S.kvalgt) { S.kvalgt = null; panel(); } tegnKompass(); };
+  $('#btnTema').onclick = () => settTema(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  $('#btnDel').onclick = () => { $('#inNavn').value = MIN.navn || ''; $('#inSeksjon').value = MIN.seksjon || ''; $('#importMsg').textContent = ''; tegnFiler(); $('#dlg').showModal(); };
+  $('#btnLukk').onclick = () => { MIN.navn = $('#inNavn').value.trim(); MIN.seksjon = $('#inSeksjon').value.trim(); store.set('ki-radar-min', MIN); $('#dlg').close(); };
+  $('#btnEksport').onclick = nedlast;
+  $('#btnNullstill').onclick = () => { if (!Object.keys(MIN.vurderinger).length) return; MIN.vurderinger = {}; store.set('ki-radar-min', MIN); tegnFiler(); oppdaterAlt(); };
+  $('#btnTaMed').onclick = () => { if (!Object.keys(MIN.vurderinger).length) { $('#importMsg').textContent = 'Du har ingen egne vurderinger ennå.'; return; }
+    SAMLET.push({ navn: ($('#inNavn').value.trim() || 'Mine vurderinger'), seksjon: $('#inSeksjon').value.trim(), vurderinger: rensVurderinger(MIN.vurderinger) });
+    store.set('ki-radar-samlet', SAMLET); tegnFiler(); oppdaterAlt(); $('#importMsg').textContent = 'Dine vurderinger er tatt med i det samlede bildet.'; };
+  $('#inFiler').onchange = e => { lesFiler([...e.target.files]); e.target.value = ''; };
+  const ro = new ResizeObserver(() => { const sv = $('#radar'), smal = sv.parentElement.clientWidth < 640;
+    if (smal !== sv.classList.contains('smal')) { sv.classList.toggle('smal', smal); sv.classList.toggle('hide-labels', smal);
+      sv.setAttribute('viewBox', smal ? '228 66 784 784' : '0 0 1240 900'); tegnHud(); } });
+  ro.observe($('#radar'));
+}
+fetch('tema.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(j => { D = j; init(); })
+  .catch(() => { $('#panel').innerHTML = '<h2>Fant ikke tema.json</h2><p>Siden må åpnes via en webserver (for eksempel GitHub Pages eller <code>python3 -m http.server</code>), ikke direkte som fil.</p>'; });
+})();
+</script>
+</body>
+</html>

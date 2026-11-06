@@ -1,0 +1,678 @@
+{
+ "meta": {
+  "tittel": "KI-radaren",
+  "konsept": "Thomas Bjørnskau, 2026",
+  "versjon": "0.1",
+  "oppdatert": "2026-11-06",
+  "status": "Utkast. Plassering, ring og pregnans er vurderinger, ikke målinger."
+ },
+ "ar": [
+  2023,
+  2024,
+  2025,
+  2026,
+  2027
+ ],
+ "scenarioAr": 2027,
+ "ringer": [
+  {
+   "id": "na",
+   "navn": "Nå",
+   "inner": 0.16,
+   "ytre": 0.53,
+   "midt": 0.414
+  },
+  {
+   "id": "snart",
+   "navn": "1–3 år",
+   "inner": 0.53,
+   "ytre": 0.773,
+   "midt": 0.663
+  },
+  {
+   "id": "horisont",
+   "navn": "Horisont",
+   "inner": 0.773,
+   "ytre": 1.0,
+   "midt": 0.898
+  }
+ ],
+ "akser": {
+  "nord": {
+   "navn": "Vår egen bruk",
+   "under": "SSB som KI-bruker"
+  },
+  "sor": {
+   "navn": "Vårt samfunnsoppdrag",
+   "under": "SSB som kilde, måler og tillitsinstitusjon"
+  },
+  "ost": {
+   "navn": "Faglig og epistemisk",
+   "under": "sannhet, kompetanse, dømmekraft"
+  },
+  "vest": {
+   "navn": "Makt og rettferdighet",
+   "under": "ansvar, skjevhet, avhengighet, kontroll"
+  }
+ },
+ "kvadranter": [
+  {
+   "id": "no",
+   "navn": "Kvalitet i arbeidet",
+   "kompass": [
+    "etterprovbarhet",
+    "eierskap"
+   ]
+  },
+  {
+   "id": "nv",
+   "navn": "Ansvar og kontroll",
+   "kompass": [
+    "etterprovbarhet",
+    "kontroll"
+   ]
+  },
+  {
+   "id": "sv",
+   "navn": "Makt og legitimitet",
+   "kompass": [
+    "forsvarlighet",
+    "kontroll"
+   ]
+  },
+  {
+   "id": "so",
+   "navn": "Datagrunnlag og formidling",
+   "kompass": [
+    "forsvarlighet",
+    "eierskap"
+   ]
+  }
+ ],
+ "typer": {
+  "E": "Faglig",
+  "L": "Makt",
+  "K": "Blandet eller kostnad"
+ },
+ "kompass": [
+  {
+   "id": "etterprovbarhet",
+   "navn": "Etterprøvbarhet",
+   "retning": "nord",
+   "meg": "La aldri et svar passere uten å sjekke det mot kilde eller egen kunnskap.",
+   "oss": "Bygg kildekrav og sporbarhet inn i rutinene, så kontroll blir det normale."
+  },
+  {
+   "id": "eierskap",
+   "navn": "Faglig eierskap",
+   "retning": "ost",
+   "meg": "Behold eierskap til problemet. La KI utfordre, ikke avgjøre.",
+   "oss": "Organiser arbeidet så folk fortsatt gjør fag, ikke bare godkjenner maskiners utkast."
+  },
+  {
+   "id": "forsvarlighet",
+   "navn": "Forsvarlighet",
+   "retning": "sor",
+   "meg": "Bruk verktøyet der det gir reell verdi, og vær ærlig om at det blir brukt.",
+   "oss": "Avvei kostnad mot nytte, og vær åpen om hvor og hvordan KI brukes.",
+   "forslag": "Sikre at tallene når fram riktig: ekte respondenter, siterbare og maskinlesbare tall."
+  },
+  {
+   "id": "kontroll",
+   "navn": "Kontroll",
+   "retning": "vest",
+   "meg": "Kjenn grensene og varsle når noe er på vei utenfor dem.",
+   "oss": "Eie databehandling, ansvarslinjer, sikkerhet og leverandørstrategi."
+  }
+ ],
+ "kilder": {
+  "imf": {
+   "tittel": "IMF (2026): StatGPT – AI for Official Statistics",
+   "url": "https://www.imf.org/en/publications/departmental-papers-policy-papers/issues/2026/03/10/statgpt-ai-for-official-statistics-573514"
+  },
+  "iasr": {
+   "tittel": "International AI Safety Report 2026",
+   "url": "https://internationalaisafetyreport.org/publication/2026-report-extended-summary-policymakers"
+  },
+  "westwood": {
+   "tittel": "Westwood (PNAS 2025), omtalt av Dartmouth",
+   "url": "https://fas.dartmouth.edu/news/2026/04/sean-westwood-wins-pnas-prize-ai-polling-study"
+  },
+  "stanford": {
+   "tittel": "Stanford Digital Economy Lab: Canaries in the Coal Mine",
+   "url": "https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/"
+  },
+  "iea": {
+   "tittel": "IEA: Energy and AI (omtalt i Scientific American)",
+   "url": "https://scientificamerican.com/article/ai-will-drive-doubling-of-data-center-energy-demand-by-2030"
+  },
+  "metr": {
+   "tittel": "METR (2025): erfarne utviklere og KI-verktøy",
+   "url": "https://arxiv.org/abs/2507.09089"
+  },
+  "hlgmos": {
+   "tittel": "UNECE HLG-MOS om generativ KI i statistikkbyråer",
+   "url": "https://unstats.un.org/bigdata/events/2025/ai-data-science/webinar2/presentations/Vytas%20and%20Olivier%20-%20%20HLG-MOS%20on%20Generative%20AI%20_UNSD.pdf"
+  },
+  "ai2027": {
+   "tittel": "AI 2027 (scenario)",
+   "url": "https://ai-2027.com/"
+  }
+ },
+ "temaer": [
+  {
+   "id": "sannhet",
+   "navn": "Sannhet i egen bruk",
+   "vinkel": 66,
+   "type": "E",
+   "ny": false,
+   "kort": "Språkmodeller lager feil som ser riktige ut, også tall.",
+   "ssb": "Plausible feil er farligere enn åpenbare. Kildekrav og kontroll må bli rutine.",
+   "kilde": "imf",
+   "posisjon": {
+    "2023": {
+     "r": 0.442,
+     "p": 3
+    },
+    "2026": {
+     "r": 0.456,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.456,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "svartboks",
+   "navn": "Svart boks",
+   "vinkel": 85,
+   "type": "E",
+   "ny": false,
+   "kort": "Vi kan sjelden forklare hvorfor modellen svarte som den gjorde.",
+   "ssb": "Metodedokumentasjon og reproduserbarhet er krav i offisiell statistikk.",
+   "kilde": "hlgmos",
+   "posisjon": {
+    "2023": {
+     "r": 0.483,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.503,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.503,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "glatthet",
+   "navn": "Glatthet",
+   "vinkel": 14,
+   "type": "E",
+   "ny": false,
+   "kort": "KI-tekst blir generisk, glatt og lik.",
+   "ssb": "Formidlingen kan miste presisjon og særpreg.",
+   "kilde": null,
+   "posisjon": {
+    "2023": {
+     "r": 0.414,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.326,
+     "p": 1
+    },
+    "2027": {
+     "r": 0.326,
+     "p": 1
+    }
+   }
+  },
+  {
+   "id": "avlaering",
+   "navn": "Avlæring",
+   "vinkel": 26,
+   "type": "E",
+   "ny": false,
+   "kort": "Kompetanse forvitrer når maskinen gjør jobben, og vi stoler for mye på den.",
+   "ssb": "Fagfolk må fortsatt kunne vurdere tallene selv. Leger fant færre svulster etter en periode med KI-støtte.",
+   "kilde": "iasr",
+   "posisjon": {
+    "2023": {
+     "r": 0.884,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.704,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.704,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "hype",
+   "navn": "Hype og feil problem",
+   "vinkel": 88,
+   "type": "K",
+   "ny": false,
+   "kort": "KI tas i bruk fordi det er mulig, ikke fordi det løser riktig problem.",
+   "ssb": "Opplevd og faktisk effekt kan sprike: erfarne utviklere ble tregere, men trodde de ble raskere.",
+   "kilde": "metr",
+   "posisjon": {
+    "2023": {
+     "r": 0.276,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.276,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.276,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "konf",
+   "navn": "Konfidensialitet og personvern",
+   "vinkel": 140,
+   "type": "L",
+   "ny": false,
+   "kort": "Data sendes til tjenester vi ikke kontrollerer, og modeller kan huske og lekke.",
+   "ssb": "Statistisk konfidensialitet er eksistensielt for SSB.",
+   "kilde": "hlgmos",
+   "posisjon": {
+    "2023": {
+     "r": 0.414,
+     "p": 3
+    },
+    "2026": {
+     "r": 0.337,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.337,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "ansvar",
+   "navn": "Ansvar og agenter",
+   "vinkel": 104,
+   "type": "L",
+   "ny": false,
+   "kort": "Agenter handler selv, og feil kan forplante seg mellom dem.",
+   "ssb": "Hvem eier et tall en agent har laget?",
+   "kilde": "iasr",
+   "posisjon": {
+    "2023": {
+     "r": 0.925,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.677,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.47,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "skjevhet",
+   "navn": "Skjevhet i klassifisering",
+   "vinkel": 150,
+   "type": "L",
+   "ny": false,
+   "kort": "Modeller som klassifiserer, kan gi systematisk skjeve resultater for grupper.",
+   "ssb": "Gjelder automatisk koding av yrke, næring og fritekst.",
+   "kilde": null,
+   "posisjon": {
+    "2023": {
+     "r": 0.691,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.691,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.691,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "sikkerhet",
+   "navn": "Sikkerhet og angrep",
+   "vinkel": 172,
+   "type": "L",
+   "ny": false,
+   "kort": "Promptinjeksjon, angrep og misbruk av agenter.",
+   "ssb": "Nye angrepsflater når KI får tilgang til systemer og data.",
+   "kilde": "iasr",
+   "posisjon": {
+    "2023": {
+     "r": 0.829,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.724,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.552,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "leverandor",
+   "navn": "Leverandøravhengighet",
+   "vinkel": 177,
+   "type": "L",
+   "ny": false,
+   "kort": "Innlåsing hos få leverandører og utenlandsk jurisdiksjon.",
+   "ssb": "Ligger på grensen mellom egen bruk og samfunnsoppdraget.",
+   "kilde": "hlgmos",
+   "posisjon": {
+    "2023": {
+     "r": 0.635,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.365,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.365,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "legitimitet",
+   "navn": "Legitimitet og åpenhet",
+   "vinkel": 206,
+   "type": "L",
+   "ny": false,
+   "kort": "Allmennhetens tillit og demokratisk forankring.",
+   "ssb": "Tilliten til tallene er oppdraget. Åpenhet om KI-bruk er en del av den.",
+   "kilde": "hlgmos",
+   "posisjon": {
+    "2023": {
+     "r": 0.663,
+     "p": 2
+    },
+    "2026": {
+     "r": 0.414,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.414,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "arbeidsliv",
+   "navn": "Arbeidsliv og rekruttering",
+   "vinkel": 226,
+   "type": "L",
+   "ny": true,
+   "kort": "KI påvirker arbeidsmarkedet først for de yngste.",
+   "ssb": "Noe SSB må måle, og noe som rammer SSBs egen rekruttering.",
+   "kilde": "stanford",
+   "posisjon": {
+    "2023": {
+     "r": 0.925,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.685,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.685,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "klima",
+   "navn": "Klima og ressurser",
+   "vinkel": 250,
+   "type": "K",
+   "ny": false,
+   "kort": "Strømforbruket i datasentre ventes å mer enn dobles til 2030.",
+   "ssb": "En tredje type skade: materiell kostnad for samfunnet.",
+   "kilde": "iea",
+   "posisjon": {
+    "2023": {
+     "r": 0.677,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.337,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.337,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "makt",
+   "navn": "Maktkonsentrasjon og kappløp",
+   "vinkel": 198,
+   "type": "L",
+   "ny": true,
+   "kort": "Få selskaper og stater kontrollerer de mest avanserte systemene.",
+   "ssb": "Påvirker hvilke verktøy SSB kan velge, og på hvilke vilkår.",
+   "kilde": "ai2027",
+   "posisjon": {
+    "2023": {
+     "r": 0.925,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.898,
+     "p": 1
+    },
+    "2027": {
+     "r": 0.718,
+     "p": 1
+    }
+   }
+  },
+  {
+   "id": "kontroll",
+   "navn": "Tap av kontroll",
+   "vinkel": 238,
+   "type": "L",
+   "ny": true,
+   "kort": "Systemer som utvikler seg raskere enn menneskelig tilsyn.",
+   "ssb": "Lav vekt i dag, men verdt å følge med på.",
+   "kilde": "ai2027",
+   "posisjon": {
+    "2023": {
+     "r": 0.953,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.925,
+     "p": 1
+    },
+    "2027": {
+     "r": 0.773,
+     "p": 1
+    }
+   }
+  },
+  {
+   "id": "mellomledd",
+   "navn": "KI som mellomledd",
+   "vinkel": 278,
+   "type": "E",
+   "ny": true,
+   "kort": "Brukere får SSB-tall via chatboter som gjengir dem feil.",
+   "ssb": "Feilene ser troverdige ut og presenteres som om de kom fra SSB.",
+   "kilde": "imf",
+   "posisjon": {
+    "2023": {
+     "r": 0.912,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.414,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.414,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "robot",
+   "navn": "Robotsvar i undersøkelser",
+   "vinkel": 324,
+   "type": "E",
+   "ny": true,
+   "kort": "KI-respondenter slipper gjennom robotkontroller i nettundersøkelser.",
+   "ssb": "Datagrunnlaget for undersøkelser kan forurenses billig og usynlig.",
+   "kilde": "westwood",
+   "posisjon": {
+    "2023": {
+     "r": 0.939,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.47,
+     "p": 3
+    },
+    "2027": {
+     "r": 0.47,
+     "p": 3
+    }
+   }
+  },
+  {
+   "id": "maal",
+   "navn": "Måleblindsone",
+   "vinkel": 346,
+   "type": "E",
+   "ny": true,
+   "kort": "Klarer vi å måle hva KI gjør med arbeidsliv, produktivitet og samfunn?",
+   "ssb": "Et krav til SSB selv, ikke bare en kritikk av KI.",
+   "kilde": null,
+   "posisjon": {
+    "2023": {
+     "r": 0.635,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.354,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.354,
+     "p": 2
+    }
+   }
+  },
+  {
+   "id": "forurenset",
+   "navn": "Forurenset informasjonsrom",
+   "vinkel": 302,
+   "type": "E",
+   "ny": true,
+   "kort": "Syntetisk innhold og falske «offisielle» tall i informasjonsrommet.",
+   "ssb": "Feilinformasjon kan bli tilskrevet SSB.",
+   "kilde": "hlgmos",
+   "posisjon": {
+    "2023": {
+     "r": 0.912,
+     "p": 1
+    },
+    "2026": {
+     "r": 0.696,
+     "p": 2
+    },
+    "2027": {
+     "r": 0.696,
+     "p": 2
+    }
+   }
+  }
+ ],
+ "scenario": [
+  {
+   "id": "koder",
+   "navn": "Supermenneskelig koder",
+   "dato": "mars 2027",
+   "vinkel": 40,
+   "kort": "KI-systemer som koder bedre enn de beste menneskene.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "uker",
+   "navn": "År med framgang på uker",
+   "dato": "2027",
+   "vinkel": 68,
+   "kort": "KI som forsker på KI og akselererer utviklingen.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "vekter",
+   "navn": "Modellvekter stjålet",
+   "dato": "feb 2027",
+   "vinkel": 218,
+   "kort": "En stat stjeler vektene til den mest avanserte modellen.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "tilsyn",
+   "navn": "Agenter overvåker agenter",
+   "dato": "2027",
+   "vinkel": 140,
+   "kort": "Mennesker henger etter, svakere KI overvåker sterkere.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "kapplop",
+   "navn": "Kappløp USA–Kina",
+   "dato": "2027",
+   "vinkel": 250,
+   "kort": "Konkurranse presser fram fart på bekostning av sikkerhet.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "agent4",
+   "navn": "Agent-4 ser lojal ut",
+   "dato": "sep 2027",
+   "vinkel": 316,
+   "kort": "En modell som består prøvene, men kan ha andre mål.",
+   "kilde": "ai2027"
+  },
+  {
+   "id": "valg",
+   "navn": "Bremse eller kappløpe",
+   "dato": "okt 2027",
+   "vinkel": 292,
+   "kort": "En komité må velge. Scenarioet har to slutter.",
+   "kilde": "ai2027"
+  }
+ ]
+}
